@@ -43,6 +43,9 @@ fn test_aggregation_api() {
     // 1. instantiation the parameters and the prover
     //
 
+    let seed = [0u8; 16];
+    let mut rng = XorShiftRng::from_seed(seed);
+
     let params = load_or_create_params(PARAMS_DIR, *AGG_DEGREE).unwrap();
     let mut prover = Prover::from_params(params);
     log::info!("build prover");
@@ -56,7 +59,7 @@ fn test_aggregation_api() {
         .unwrap()
         .unwrap_or_else(|| {
             let proof = prover
-                .create_target_circuit_proof_batch::<SuperCircuit>(block_traces.as_ref())
+                .create_target_circuit_proof_batch::<SuperCircuit>(block_traces.as_ref(), &mut rng)
                 .unwrap();
 
             // Dump inner circuit proof.
@@ -69,15 +72,12 @@ fn test_aggregation_api() {
     // sanity check: the inner proof is correct
 
     // 3. build an aggregation circuit proof
-    let agg_circuit = AggregationCircuit::new(
-        &prover.agg_params,
-        [inner_proof.snark.clone()],
-        XorShiftRng::from_seed([0u8; 16]),
-    );
+    let agg_circuit =
+        AggregationCircuit::new(&prover.agg_params, [inner_proof.snark.clone()], &mut rng);
 
     let proved_block_count = inner_proof.num_of_proved_blocks;
     let outer_proof = prover
-        .create_agg_proof_by_agg_circuit(&agg_circuit, proved_block_count)
+        .create_agg_proof_by_agg_circuit(&agg_circuit, &mut rng, proved_block_count)
         .unwrap();
 
     // Dump aggregation proof, vk and instance.
