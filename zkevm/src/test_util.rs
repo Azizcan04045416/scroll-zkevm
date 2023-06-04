@@ -12,7 +12,8 @@ use types::eth::BlockTrace;
 pub mod mock_plonk;
 
 pub const GIT_VERSION: &str = git_version!();
-pub const PARAMS_DIR: &str = "./test_params";
+// pub const PARAMS_DIR: &str = "./test_params";
+pub const PARAMS_DIR: &str = "/home/ubuntu/steven/scroll-zkevm/zkevm/test_params";
 
 pub static ENV_LOGGER: Once = Once::new();
 
@@ -28,10 +29,7 @@ pub fn init_env_and_log() {
 
 pub fn create_output_dir() -> String {
     let mode = read_env_var("MODE", "multi".to_string());
-    let output = read_env_var(
-        "OUTPUT_DIR",
-        format!("output_{}_{}", Utc::now().format("%Y%m%d_%H%M%S"), mode),
-    );
+    let output = read_env_var("OUTPUT_DIR", "output_gupeng".to_string());
 
     let output_dir = PathBuf::from_str(&output).unwrap();
     fs::create_dir_all(output_dir).unwrap();

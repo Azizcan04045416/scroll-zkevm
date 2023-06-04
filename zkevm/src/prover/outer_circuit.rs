@@ -47,9 +47,6 @@ impl Prover {
         let rng1 = XorShiftRng::from_seed(seed1);
         let mut rng2 = XorShiftRng::from_seed(seed2);
 
-
-
-
         // build the aggregation circuit inputs from the inner circuit outputs
         let agg_circuit = AggregationCircuit::new(
             &self.agg_params,

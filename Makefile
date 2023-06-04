@@ -39,7 +39,7 @@ mock-testnet:
 	@cargo run --bin mock_testnet --release
 
 test-agg:
-	@cargo test --features prove_verify --release test_aggregation_api
+	@cargo test --features prove_verify --release test_aggregation_api -- --exact --nocapture
 
 rows:
 	@cargo test --features prove_verify --release estimate_circuit_rows
