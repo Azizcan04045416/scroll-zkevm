@@ -223,13 +223,11 @@ fn test_target_circuit_prove_verify<C: TargetCircuit>() {
 
     let (_, block_traces) = load_block_traces_for_test();
 
-    let mut rng = XorShiftRng::from_seed([0u8; 16]);
-
     log::info!("start generating {} proof", C::name());
     let now = Instant::now();
     let mut prover = Prover::from_param_dir(PARAMS_DIR);
     let proof = prover
-        .create_target_circuit_proof_batch::<C>(&block_traces, &mut rng)
+        .create_target_circuit_proof_batch::<C>(&block_traces)
         .unwrap();
     log::info!("finish generating proof, elapsed: {:?}", now.elapsed());
 

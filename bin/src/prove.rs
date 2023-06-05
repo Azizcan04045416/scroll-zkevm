@@ -1,7 +1,5 @@
 use clap::Parser;
 use log::info;
-use rand::{RngCore, SeedableRng};
-use rand_xorshift::XorShiftRng;
 use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
@@ -41,18 +39,6 @@ fn main() {
     let agg_params = load_or_create_params(&args.params_path.unwrap(), *AGG_DEGREE)
         .expect("failed to load or create params");
 
-    let seed = [0u8; 16];
-    let (_local_rng1, mut local_rng2) = {
-        let mut rng = XorShiftRng::from_seed(seed);
-        let mut seed1 = [0u8; 16];
-        rng.fill_bytes(&mut seed1);
-        let local_rng1 = XorShiftRng::from_seed(seed1);
-        let mut seed2 = [0u8; 16];
-        rng.fill_bytes(&mut seed2);
-        let local_rng2 = XorShiftRng::from_seed(seed2);
-        (local_rng1, local_rng2)
-    };
-
     let mut prover = Prover::from_params(agg_params);
 
     let mut traces = HashMap::new();
@@ -77,7 +63,7 @@ fn main() {
 
             let now = Instant::now();
             let super_proof = prover
-                .create_target_circuit_proof::<SuperCircuit>(&trace, &mut local_rng2)
+                .create_target_circuit_proof::<SuperCircuit>(&trace)
                 .expect("cannot generate evm_proof");
             info!(
                 "finish generating evm proof of {}, elapsed: {:?}",
@@ -96,7 +82,7 @@ fn main() {
 
             let now = Instant::now();
             let agg_proof = prover
-                .create_agg_circuit_proof(&trace, &mut local_rng2)
+                .create_agg_circuit_proof(&trace)
                 .expect("cannot generate agg_proof");
             info!(
                 "finish generating agg proof of {}, elapsed: {:?}",
