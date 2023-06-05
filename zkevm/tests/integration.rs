@@ -3,8 +3,6 @@ use std::collections::HashMap;
 use chrono::Utc;
 use eth_types::Bytes;
 use halo2_proofs::{plonk::keygen_vk, SerdeFormat};
-use rand::{RngCore, SeedableRng};
-use rand_xorshift::XorShiftRng;
 use zkevm::{
     capacity_checker::CircuitCapacityChecker,
     circuit::{SuperCircuit, TargetCircuit, DEGREE},
